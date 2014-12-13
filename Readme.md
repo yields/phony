@@ -35,19 +35,19 @@ $ go get github.com/yields/phony
 ```text
 
 Usage: phony
-[--tick d]
-[--max n]
-[--list]
+  [--tick d]
+  [--max n]
+  [--list]
 
-phony -h | --help
-phony -v | --version
+  phony -h | --help
+  phony -v | --version
 
 Options:
---list          list all available generators
---max n         generate data up to n [default: -1]
---tick d        generate data every d [default: 10ms]
--v, --version   show version information
--h, --help      show help information
+  --list          list all available generators
+  --max n         generate data up to n [default: -1]
+  --tick d        generate data every d [default: 10ms]
+  -v, --version   show version information
+  -h, --help      show help information
 
 ```
 
