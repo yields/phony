@@ -21,7 +21,7 @@ echo "'db.users.insert({ name: \"{{name}}\" })'" | phony | xargs -L1 -n1 mongo -
 echo "set {{username}} {{avatar}}" | phony | xargs -L1 -n3 redis-cli
 
 # send a single request using curl.
-echo 'country={{country}}' | go run main.go --max 1 | curl -d @- httpbin.org/post
+echo 'country={{country}}' | phony --max 1 | curl -d @- httpbin.org/post
 ```
 
 ## Installation
