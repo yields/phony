@@ -5,6 +5,7 @@ import "github.com/tj/docopt"
 import "math/rand"
 import "io/ioutil"
 import "strconv"
+import "strings"
 import "regexp"
 import "time"
 import "fmt"
@@ -64,7 +65,7 @@ func compile(tmpl string) func() string {
 	check(err)
 	return func() string {
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
-			path := s[2 : len(s)-2]
+			path := strings.Trim(s[2:len(s)-2], " ")
 			return phony.Get(path)
 		})
 	}
