@@ -9,19 +9,29 @@
 
 ```bash
 # publish email to nsq every 1ms.
-echo '{"email":"{{email}}", "subject": "welcome!"}' | phony --tick 1ms | json-to-nsq --topic users
+echo '{"email":"{{email}}", "subject": "welcome!"}' \
+  | phony --tick 1ms \
+  | json-to-nsq --topic users
 
 # add users to FoundationDB.
-echo "'set {{username}} {{avatar}}'" | phony | xargs -L1 -n3 fdbcli --exec
+echo "'set {{username}} {{avatar}}'" \
+  | phony \
+  | xargs -L1 -n3 fdbcli --exec
 
 # add users to MongoDB.
-echo "'db.users.insert({ name: \"{{name}}\" })'" | phony | xargs -L1 -n1 mongo --eval
+echo "'db.users.insert({ name: \"{{name}}\" })'" \
+  | phony \
+  | xargs -L1 -n1 mongo --eval
 
 # add users to Redis.
-echo "set {{username}} {{avatar}}" | phony | xargs -L1 -n3 redis-cli
+echo "set {{username}} {{avatar}}" \
+  | phony \
+  | xargs -L1 -n3 redis-cli
 
 # send a single request using curl.
-echo 'country={{country}}' | phony --max 1 | curl -d @- httpbin.org/post
+echo 'country={{country}}' \
+  | phony --max 1 \
+  | curl -d @- httpbin.org/post
 ```
 
 ## Installation
