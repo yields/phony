@@ -2,6 +2,8 @@
 # phony
 
   Tiny command line program that accepts a template and outputs fake data.
+  
+  ![](https://cldup.com/RZoAhReDqN.gif)
 
 ## Examples
 
