@@ -1,5 +1,8 @@
 package phony
 
+import "time"
+import "strconv"
+
 // Default gens.
 var gens = map[string]func(g *Generator) string{
 	"name": func(g *Generator) string {
@@ -21,5 +24,8 @@ var gens = map[string]func(g *Generator) string{
 		// http://uifaces.com/authorized
 		user := g.Get("username")
 		return "https://s3.amazonaws.com/uifaces/faces/twitter/" + user + "/128.jpg"
+	},
+	"unixtime": func(g *Generator) string {
+		return strconv.FormatInt(time.Now().UnixNano(), 10)
 	},
 }
