@@ -2,7 +2,7 @@
 # phony
 
   Tiny command line program that accepts a template and outputs fake data.
-  
+
   ![](https://cldup.com/RZoAhReDqN.gif)
 
 ## Examples
@@ -64,24 +64,26 @@ Options:
 ## Generators
 
 ```text
-email
-domain
-avatar
-name
-domain.tld
-domain.name
-username
-name.last
-color
-country.code
-state
-timezone
-name.first
-product.name
-country
-state.code
-product.category
-event.action
+  avatar
+  color
+  country
+  country.code
+  domain
+  domain.name
+  domain.tld
+  email
+  event.action
+  id
+  name
+  name.first
+  name.last
+  product.category
+  product.name
+  state
+  state.code
+  timezone
+  unixtime
+  username
 ```
 
 ## License
