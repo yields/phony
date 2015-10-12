@@ -1,6 +1,9 @@
 package phony
 
-import "time"
+import (
+	"math/rand"
+	"time"
+)
 import "strconv"
 
 // Default gens.
@@ -27,5 +30,15 @@ var gens = map[string]func(g *Generator) string{
 	},
 	"unixtime": func(g *Generator) string {
 		return strconv.FormatInt(time.Now().UnixNano(), 10)
+	},
+	"id": func(g *Generator) string {
+		chars := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+		ret := make([]rune, 10)
+
+		for i := range ret {
+			ret[i] = chars[rand.Intn(len(chars))]
+		}
+
+		return string(ret)
 	},
 }
