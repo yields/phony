@@ -7,6 +7,7 @@ import "io/ioutil"
 import "strconv"
 import "strings"
 import "regexp"
+import "sort"
 import "time"
 import "fmt"
 import "os"
@@ -19,7 +20,7 @@ var usage = `
 
     phony -h | --help
     phony -v | --version
-    
+
   Options:
     --list          list all available generators
     --max n         generate data up to n [default: -1]
@@ -35,6 +36,7 @@ func main() {
 
 	if args["--list"].(bool) {
 		all := phony.List()
+		sort.Strings(all)
 		println()
 		for _, name := range all {
 			fmt.Printf("  %s\n", name)

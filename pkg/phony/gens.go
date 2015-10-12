@@ -1,10 +1,8 @@
 package phony
 
-import (
-	"math/rand"
-	"time"
-)
+import "math/rand"
 import "strconv"
+import "time"
 
 // Default gens.
 var gens = map[string]func(g *Generator) string{
