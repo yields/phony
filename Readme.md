@@ -77,6 +77,8 @@ Options:
   id
   ipv4
   ipv6
+  latitude
+  longitude
   name
   name.first
   name.last

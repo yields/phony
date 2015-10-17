@@ -49,4 +49,12 @@ var gens = map[string]func(g *Generator) string{
 	"mac.address": func(g *Generator) string {
 		return fmt.Sprintf("%x:%x:%x:%x:%x:%x", rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255))
 	},
+	"latitude": func(g *Generator) string {
+		lattitude := (rand.Float64() * 180) - 90
+		return strconv.FormatFloat(lattitude, 'f', 6, 64)
+	},
+	"longitude": func(g *Generator) string {
+		longitude := (rand.Float64() * 360) - 180
+		return strconv.FormatFloat(longitude, 'f', 6, 64)
+	},
 }
