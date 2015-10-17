@@ -73,6 +73,7 @@ Options:
   domain.tld
   email
   event.action
+  http.method
   id
   name
   name.first
