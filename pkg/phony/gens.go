@@ -57,4 +57,7 @@ var gens = map[string]func(g *Generator) string{
 		longitude := (rand.Float64() * 360) - 180
 		return strconv.FormatFloat(longitude, 'f', 6, 64)
 	},
+	"double": func(g *Generator) string {
+		return strconv.FormatFloat(rand.NormFloat64()*1000, 'f', 4, 64)
+	},
 }

@@ -71,6 +71,7 @@ Options:
   domain
   domain.name
   domain.tld
+  double
   email
   event.action
   http.method
