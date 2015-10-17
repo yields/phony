@@ -80,6 +80,7 @@ Options:
   name
   name.first
   name.last
+  mac.address
   product.category
   product.name
   state
