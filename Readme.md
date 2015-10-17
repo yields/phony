@@ -75,6 +75,7 @@ Options:
   event.action
   http.method
   id
+  ipv4
   name
   name.first
   name.last

@@ -3,6 +3,7 @@ package phony
 import "math/rand"
 import "strconv"
 import "time"
+import "fmt"
 
 // Default gens.
 var gens = map[string]func(g *Generator) string{
@@ -38,5 +39,8 @@ var gens = map[string]func(g *Generator) string{
 		}
 
 		return string(ret)
+	},
+	"ipv4": func(g *Generator) string {
+		return fmt.Sprintf("%d.%d.%d.%d", 1+rand.Intn(253), rand.Intn(255), rand.Intn(255), 1+rand.Intn(253))
 	},
 }
