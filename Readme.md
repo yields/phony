@@ -76,6 +76,7 @@ Options:
   http.method
   id
   ipv4
+  ipv6
   name
   name.first
   name.last

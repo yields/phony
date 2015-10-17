@@ -43,4 +43,7 @@ var gens = map[string]func(g *Generator) string{
 	"ipv4": func(g *Generator) string {
 		return fmt.Sprintf("%d.%d.%d.%d", 1+rand.Intn(253), rand.Intn(255), rand.Intn(255), 1+rand.Intn(253))
 	},
+	"ipv6": func(g *Generator) string {
+		return fmt.Sprintf("2001:cafe:%x:%x:%x:%x:%x:%x", rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255))
+	},
 }
