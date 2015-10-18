@@ -80,10 +80,10 @@ Options:
   ipv6
   latitude
   longitude
+  mac.address
   name
   name.first
   name.last
-  mac.address
   product.category
   product.name
   state
