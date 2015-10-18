@@ -71,12 +71,19 @@ Options:
   domain
   domain.name
   domain.tld
+  double
   email
   event.action
+  http.method
   id
+  ipv4
+  ipv6
+  latitude
+  longitude
   name
   name.first
   name.last
+  mac.address
   product.category
   product.name
   state

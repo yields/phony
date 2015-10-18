@@ -2420,4 +2420,13 @@ var dict = map[string][]string{
 		"Watched",
 		"Clicked",
 	},
+	"http.method": []string{
+		"GET",
+		"POST",
+		"PUT",
+		"PATCH",
+		"HEAD",
+		"DELETE",
+		"OPTION",
+	},
 }

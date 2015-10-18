@@ -3,6 +3,7 @@ package phony
 import "math/rand"
 import "strconv"
 import "time"
+import "fmt"
 
 // Default gens.
 var gens = map[string]func(g *Generator) string{
@@ -38,5 +39,25 @@ var gens = map[string]func(g *Generator) string{
 		}
 
 		return string(ret)
+	},
+	"ipv4": func(g *Generator) string {
+		return fmt.Sprintf("%d.%d.%d.%d", 1+rand.Intn(253), rand.Intn(255), rand.Intn(255), 1+rand.Intn(253))
+	},
+	"ipv6": func(g *Generator) string {
+		return fmt.Sprintf("2001:cafe:%x:%x:%x:%x:%x:%x", rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255))
+	},
+	"mac.address": func(g *Generator) string {
+		return fmt.Sprintf("%x:%x:%x:%x:%x:%x", rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255), rand.Intn(255))
+	},
+	"latitude": func(g *Generator) string {
+		lattitude := (rand.Float64() * 180) - 90
+		return strconv.FormatFloat(lattitude, 'f', 6, 64)
+	},
+	"longitude": func(g *Generator) string {
+		longitude := (rand.Float64() * 360) - 180
+		return strconv.FormatFloat(longitude, 'f', 6, 64)
+	},
+	"double": func(g *Generator) string {
+		return strconv.FormatFloat(rand.NormFloat64()*1000, 'f', 4, 64)
 	},
 }
