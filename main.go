@@ -73,7 +73,9 @@ func compile(tmpl string) func() string {
 			if len(parts) == 2 {
 				arguments = strings.Split(parts[1], ",")
 			}
-			return phony.GetWithArgs(parts[0], arguments)
+			data, err := phony.GetWithArgs(parts[0], arguments)
+			check(err)
+			return data
 		})
 	}
 }
