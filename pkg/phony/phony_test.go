@@ -70,6 +70,16 @@ func TestSmartunixtimeScatter(t *testing.T) {
 	assert.True(t, timestamp > hundredDaysAgo && timestamp < hundredDaysLater, "Time should be within the given range")
 }
 
+func TestSmartdate(t *testing.T) {
+	format := "SqlDatetime"
+	date, err := GetWithArgs("smartdate", []string{format})
+	assert.Nil(t, err)
+
+	today := time.Now().Format(supportedDateFormats[format])
+
+	assert.Equal(t, date, today)
+}
+
 func TestEmpty(t *testing.T) {
 	a, _ := Get("foo")
 	assert.Equal(t, a, "")
