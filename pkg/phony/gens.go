@@ -1,9 +1,14 @@
 package phony
 
-import "math/rand"
-import "strconv"
-import "time"
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+)
+
+var smartdoubleArgs = map[string][]float64{}
 
 // Default gens.
 var gens = map[string]func(g *Generator, args []string) (string, error){
@@ -67,16 +72,22 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 			num           = 0.0
 			err           error
 			floatArgs     = []float64{}
+			ok bool
 		)
 
-		for i := 0; i < len(args); i++ {
-			num, err = strconv.ParseFloat(args[i], 64)
+		// Convert arguments to floats once and store them in private smartdoubleArgs
+		if floatArgs, ok = smartdoubleArgs[strings.Join(args, ",")]; !ok {
+			for i := 0; i < len(args); i++ {
+				num, err = strconv.ParseFloat(args[i], 64)
 
-			if err != nil {
-				break
-			} else {
+				if err != nil {
+					break
+				}
+
 				floatArgs = append(floatArgs, num)
 			}
+
+			smartdoubleArgs[strings.Join(args, ",")] = floatArgs
 		}
 
 		if len(floatArgs) > 0 {
