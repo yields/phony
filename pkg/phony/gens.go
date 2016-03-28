@@ -8,7 +8,39 @@ import (
 	"time"
 )
 
-var smartdoubleArgs = map[string][]float64{}
+var cachedArgs = map[string]map[string]interface{}{
+	"smartdouble": map[string]interface{}{},
+}
+
+func stringsToFloats(args []string) []float64 {
+	floatArgs := []float64{}
+
+	for i := 0; i < len(args); i++ {
+		num, err := strconv.ParseFloat(args[i], 64)
+
+		if err != nil {
+			break
+		}
+
+		floatArgs = append(floatArgs, num)
+	}
+
+	return floatArgs
+}
+
+var getGenArgs = map[string]func(args []string) interface{}{
+	"smartdouble": func(args []string) interface{} {
+		key := strings.Join(args, ",")
+
+		if found, ok := cachedArgs["smartdouble"][key]; ok {
+			return found
+		}
+
+		cachedArgs["smartdouble"][key] = stringsToFloats(args)
+
+		return cachedArgs["smartdouble"][key]
+	},
+}
 
 // Default gens.
 var gens = map[string]func(g *Generator, args []string) (string, error){
@@ -69,26 +101,10 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 		var (
 			desiredStdDev = 1000.0
 			desiredMean   = 0.0
-			num           = 0.0
-			err           error
-			floatArgs     = []float64{}
-			ok bool
+			floatArgs     []float64
 		)
 
-		// Convert arguments to floats once and store them in private smartdoubleArgs
-		if floatArgs, ok = smartdoubleArgs[strings.Join(args, ",")]; !ok {
-			for i := 0; i < len(args); i++ {
-				num, err = strconv.ParseFloat(args[i], 64)
-
-				if err != nil {
-					break
-				}
-
-				floatArgs = append(floatArgs, num)
-			}
-
-			smartdoubleArgs[strings.Join(args, ",")] = floatArgs
-		}
+		floatArgs = getGenArgs["smartdouble"](args).([]float64)
 
 		if len(floatArgs) > 0 {
 			desiredStdDev = floatArgs[0]
