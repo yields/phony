@@ -86,6 +86,7 @@ Options:
   name.last
   product.category
   product.name
+  smartdouble:desiredStdDev,desiredMean,min,max
   state
   state.code
   timezone
