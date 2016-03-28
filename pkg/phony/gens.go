@@ -116,7 +116,7 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 	"email": func(g *Generator, args []string) (string, error) {
 		username, _ := g.Get("username")
 		host, _ := g.Get("domain")
-		return username + "@" + host, nil
+		return fmt.Sprintf("%s%d@%s", username, rand.Intn(253), host), nil
 	},
 	"domain": func(g *Generator, args []string) (string, error) {
 		name, _ := g.Get("domain.name")
