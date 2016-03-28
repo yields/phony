@@ -63,7 +63,7 @@ func main() {
 }
 
 func compile(tmpl string) func() string {
-	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+(\:([a-zA-Z0-9,]+))?) *}})`)
+	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+(\:([a-zA-Z0-9\.,-]+))?) *}})`)
 	check(err)
 	return func() string {
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
