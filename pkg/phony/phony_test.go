@@ -1,8 +1,13 @@
 package phony
 
-import "testing"
-import "github.com/stretchr/testify/assert"
-import "strconv"
+import (
+	"testing"
+	"time"
+
+	"strconv"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestGet(t *testing.T) {
 	a, _ := Get("name")
@@ -23,8 +28,46 @@ func TestSmartdouble(t *testing.T) {
 
 	num, err := strconv.ParseFloat(a, 64)
 	assert.Nil(t, err)
+
 	assert.True(t, num >= 1000.0, "Generated number is smaller than 1000")
 	assert.True(t, num <= 1000000.0, "Generated number is larger than 1000000")
+}
+
+func TestSmartunixtimeDeviation(t *testing.T) {
+	a, err := GetWithArgs("smartunixtime", []string{"100"})
+	assert.Nil(t, err)
+
+	b, err := GetWithArgs("smartunixtime", []string{"1"})
+	assert.Nil(t, err)
+
+	aInt, err := strconv.ParseInt(a, 10, 64)
+	assert.Nil(t, err)
+
+	bInt, err := strconv.ParseInt(b, 10, 64)
+	assert.Nil(t, err)
+
+	assert.True(t, aInt > bInt, "The first date should be larger than the second")
+
+	bIntPlus99Days := bInt + 99*int64(time.Hour)*24
+	assert.True(t, aInt < bIntPlus99Days, "The first date should be less than 99 days ahead of the second date")
+}
+
+func TestSmartunixtimeScatter(t *testing.T) {
+	reference := time.Now().UnixNano()
+	oneHourAgo := reference - int64(time.Minute)*10
+	oneHourLater := reference + int64(time.Minute)*10
+
+	rawTimestamp, err := GetWithArgs("smartunixtime", []string{"0", "100"})
+	assert.Nil(t, err)
+
+	timestamp, err := strconv.ParseInt(rawTimestamp, 10, 64)
+	assert.Nil(t, err)
+
+	assert.True(t, timestamp < oneHourAgo || timestamp > oneHourLater, "Time should be significantly different from now")
+
+	hundredDaysAgo := reference - int64(time.Hour)*24*100
+	hundredDaysLater := reference + int64(time.Hour)*24*100
+	assert.True(t, timestamp > hundredDaysAgo && timestamp < hundredDaysLater, "Time should be within the given range")
 }
 
 func TestEmpty(t *testing.T) {

@@ -8,8 +8,14 @@ import (
 	"time"
 )
 
+const (
+	smartdouble   = "smartdouble"
+	smartunixtime = "smartunixtime"
+)
+
 var cachedArgs = map[string]map[string]interface{}{
-	"smartdouble": map[string]interface{}{},
+	smartdouble:   map[string]interface{}{},
+	smartunixtime: map[string]interface{}{},
 }
 
 func stringsToFloats(args []string) []float64 {
@@ -29,16 +35,27 @@ func stringsToFloats(args []string) []float64 {
 }
 
 var getGenArgs = map[string]func(args []string) interface{}{
-	"smartdouble": func(args []string) interface{} {
+	smartdouble: func(args []string) interface{} {
 		key := strings.Join(args, ",")
 
-		if found, ok := cachedArgs["smartdouble"][key]; ok {
+		if found, ok := cachedArgs[smartdouble][key]; ok {
 			return found
 		}
 
-		cachedArgs["smartdouble"][key] = stringsToFloats(args)
+		cachedArgs[smartdouble][key] = stringsToFloats(args)
 
-		return cachedArgs["smartdouble"][key]
+		return cachedArgs[smartdouble][key]
+	},
+	smartunixtime: func(args []string) interface{} {
+		key := strings.Join(args, ",")
+
+		if found, ok := cachedArgs[smartdouble][key]; ok {
+			return found
+		}
+
+		cachedArgs[smartunixtime][key] = stringsToFloats(args)
+
+		return cachedArgs[smartunixtime][key]
 	},
 }
 
@@ -101,10 +118,9 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 		var (
 			desiredStdDev = 1000.0
 			desiredMean   = 0.0
-			floatArgs     []float64
 		)
 
-		floatArgs = getGenArgs["smartdouble"](args).([]float64)
+		floatArgs := getGenArgs["smartdouble"](args).([]float64)
 
 		if len(floatArgs) > 0 {
 			desiredStdDev = floatArgs[0]
@@ -125,5 +141,36 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 		}
 
 		return strconv.FormatFloat(randNum, 'f', 4, 64), nil
+	},
+	// Smartunixtime returns a random unix time based on the current time, args can be an array of strings.
+	// Each string is expected to be float64 parsable. First argument will be interpreted as deviation days,
+	// second argument will be interpreted as days for allowed range in days.
+	//
+	// Example:
+	//   Today is: 2006-01-02T15:04:05Z07:00
+	//   Args: ["10", "5"]
+	//     Deviation is: 10 (days)
+	//     Scatter is: 5 (days)
+	//   Result: unix timestamp representing date between 2006-01-07T15:04:05Z07:00 2006-01-17T15:04:05Z07:00
+	"smartunixtime": func(g *Generator, args []string) (string, error) {
+		date := time.Now()
+
+		floatArgs := getGenArgs["smartunixtime"](args).([]float64)
+
+		// Deviation
+		if len(floatArgs) > 0 {
+			addDays := int64(floatArgs[0] * float64(time.Hour) * 24.0)
+			date = date.Add(time.Duration(addDays))
+		}
+
+		// Scatter
+		if len(floatArgs) > 1 {
+			scatterFactor := (rand.Float64() - 0.5) * 2
+			scatterDays := int64(floatArgs[1] * float64(time.Hour) * 24.0 * scatterFactor)
+
+			date = date.Add(time.Duration(scatterDays))
+		}
+
+		return strconv.FormatInt(date.UnixNano(), 10), nil
 	},
 }
