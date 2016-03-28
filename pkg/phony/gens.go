@@ -60,4 +60,43 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 	"double": func(g *Generator, args []string) (string, error) {
 		return strconv.FormatFloat(rand.NormFloat64()*1000, 'f', 4, 64), nil
 	},
+	"smartdouble": func(g *Generator, args []string) (string, error) {
+		var (
+			desiredStdDev = 1000.0
+			desiredMean   = 0.0
+			num           = 0.0
+			err           error
+			floatArgs     = []float64{}
+		)
+
+		for i := 0; i < len(args); i++ {
+			num, err = strconv.ParseFloat(args[i], 64)
+
+			if err != nil {
+				break
+			} else {
+				floatArgs = append(floatArgs, num)
+			}
+		}
+
+		if len(floatArgs) > 0 {
+			desiredStdDev = floatArgs[0]
+		}
+
+		if len(floatArgs) > 1 {
+			desiredMean = floatArgs[1]
+		}
+
+		randNum := rand.NormFloat64()*desiredStdDev + desiredMean
+
+		if len(floatArgs) > 2 && randNum < floatArgs[2] {
+			randNum = floatArgs[2]
+		}
+
+		if len(floatArgs) > 3 && randNum > floatArgs[3] {
+			randNum = floatArgs[3]
+		}
+
+		return strconv.FormatFloat(randNum, 'f', 4, 64), nil
+	},
 }
