@@ -9,20 +9,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGet(t *testing.T) {
-	a, _ := Get("name")
-	b, _ := Get("name")
+func TestGetReturnsNonEmptyString(t *testing.T) {
+	g := NewGenerator()
+
+	a, _ := g.Get("name", nil)
 	assert.NotEqual(t, a, "")
-	assert.NotEqual(t, b, "")
 }
 
 func TestGetWithArgsBehavesAsGetByDefault(t *testing.T) {
-	a, _ := GetWithArgs("name", []string{})
+	g := NewGenerator()
+
+	a, _ := g.GetWithArgs("name", []string{}, nil)
 	assert.NotEqual(t, a, "")
 }
 
 func TestSmartdouble(t *testing.T) {
-	a, err := GetWithArgs("smartdouble", []string{"100", "10000", "1000", "1000000"})
+	g := NewGenerator()
+
+	a, err := g.GetWithArgs("smartdouble", []string{"100", "10000", "1000", "1000000"}, nil)
 	assert.Nil(t, err)
 	assert.NotEqual(t, a, "")
 
@@ -34,10 +38,12 @@ func TestSmartdouble(t *testing.T) {
 }
 
 func TestSmartunixtimeDeviation(t *testing.T) {
-	a, err := GetWithArgs("smartunixtime", []string{"100"})
+	g := NewGenerator()
+
+	a, err := g.GetWithArgs("smartunixtime", []string{"100"}, nil)
 	assert.Nil(t, err)
 
-	b, err := GetWithArgs("smartunixtime", []string{"1"})
+	b, err := g.GetWithArgs("smartunixtime", []string{"1"}, nil)
 	assert.Nil(t, err)
 
 	aInt, err := strconv.ParseInt(a, 10, 64)
@@ -53,11 +59,13 @@ func TestSmartunixtimeDeviation(t *testing.T) {
 }
 
 func TestSmartunixtimeScatter(t *testing.T) {
+	g := NewGenerator()
+
 	reference := time.Now().UnixNano()
 	oneHourAgo := reference - int64(time.Minute)*10
 	oneHourLater := reference + int64(time.Minute)*10
 
-	rawTimestamp, err := GetWithArgs("smartunixtime", []string{"0", "100"})
+	rawTimestamp, err := g.GetWithArgs("smartunixtime", []string{"0", "100"}, nil)
 	assert.Nil(t, err)
 
 	timestamp, err := strconv.ParseInt(rawTimestamp, 10, 64)
@@ -71,8 +79,10 @@ func TestSmartunixtimeScatter(t *testing.T) {
 }
 
 func TestSmartdate(t *testing.T) {
+	g := NewGenerator()
+
 	format := "SqlDatetime"
-	date, err := GetWithArgs("smartdate", []string{format})
+	date, err := g.GetWithArgs("smartdate", []string{format}, nil)
 	assert.Nil(t, err)
 
 	today := time.Now().Format(supportedDateFormats[format])
@@ -81,13 +91,17 @@ func TestSmartdate(t *testing.T) {
 }
 
 func TestEmpty(t *testing.T) {
-	a, _ := Get("foo")
+	g := NewGenerator()
+
+	a, _ := g.Get("foo", nil)
 	assert.Equal(t, a, "")
 }
 
 func TestAll(t *testing.T) {
-	for _, p := range List() {
-		a, _ := Get(p)
+	g := NewGenerator()
+
+	for _, p := range g.List() {
+		a, _ := g.Get(p, nil)
 		assert.NotEqual(t, a, "")
 	}
 }

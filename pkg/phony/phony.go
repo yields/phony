@@ -2,44 +2,26 @@ package phony
 
 import "math/rand"
 
-// Default generator.
-var gen = New(&Dataset{
-	gens: gens,
-	dict: dict,
-})
-
-// Dataset.
-type Dataset struct {
-	gens map[string]func(g *Generator, args []string) (string, error)
-	dict map[string][]string
-}
-
-// Generator structure.
-type Generator struct {
-	set *Dataset
-}
-
-// Initialize Generator with `dataset`.
-func New(set *Dataset) *Generator {
-	return &Generator{set}
+// Get `path`.
+func (g *Generator) Get(p string, r *rand.Rand) (string, error) {
+	return g.GetWithArgs(p, nil, r)
 }
 
 // Get `path`.
-func (g *Generator) Get(p string) (string, error) {
-	return g.GetWithArgs(p, nil)
-}
+func (g *Generator) GetWithArgs(p string, args []string, r *rand.Rand) (string, error) {
+	gens := g.generators
+	dict := g.dictionary
 
-// Get `path`.
-func (g *Generator) GetWithArgs(p string, args []string) (string, error) {
-	gens := g.set.gens
-	dict := g.set.dict
+	if r == nil {
+		r = CreateRand()
+	}
 
 	if f, ok := gens[p]; ok {
-		return f(g, args)
+		return f(g, args, r)
 	}
 
 	if list, ok := dict[p]; ok {
-		i := rand.Intn(len(list))
+		i := r.Intn(len(list))
 		return list[i], nil
 	}
 
@@ -48,8 +30,8 @@ func (g *Generator) GetWithArgs(p string, args []string) (string, error) {
 
 // List all paths.
 func (g *Generator) List() []string {
-	gens := g.set.gens
-	dict := g.set.dict
+	gens := g.generators
+	dict := g.dictionary
 	ret := make([]string, 0)
 
 	for k, _ := range gens {
@@ -61,19 +43,4 @@ func (g *Generator) List() []string {
 	}
 
 	return ret
-}
-
-// Get `path`.
-func Get(path string) (string, error) {
-	return gen.Get(path)
-}
-
-// Get `path`.
-func GetWithArgs(path string, args []string) (string, error) {
-	return gen.GetWithArgs(path, args)
-}
-
-// List all available paths.
-func List() []string {
-	return gen.List()
 }

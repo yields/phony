@@ -46,15 +46,19 @@ $ go get github.com/yields/phony
 Usage: phony
   [--tick d]
   [--max n]
+  [--batch n]
   [--list]
+  [--concurrent]
 
   phony -h | --help
   phony -v | --version
 
 Options:
-  --list          list all available generators
-  --max n         generate data up to n [default: -1]
   --tick d        generate data every d [default: 10ms]
+  --max n         generate data up to n [default: -1]
+  --batch n       batch size for concurrent runs [default: 0]
+  --list d        list all available generators
+  --concurrent    skip ticks and generate fake data concurrently
   -v, --version   show version information
   -h, --help      show help information
 
