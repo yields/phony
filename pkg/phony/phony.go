@@ -34,17 +34,13 @@ func (g *Generator) GetWithArgs(p string, args []string) (string, error) {
 	gens := g.set.gens
 	dict := g.set.dict
 
-	for k, f := range gens {
-		if k == p {
-			return f(g, args)
-		}
+	if f, ok := gens[p]; ok {
+		return f(g, args)
 	}
 
-	for k, list := range dict {
-		if k == p {
-			i := rand.Intn(len(list))
-			return list[i], nil
-		}
+	if list, ok := dict[p]; ok {
+		i := rand.Intn(len(list))
+		return list[i], nil
 	}
 
 	return "", nil
