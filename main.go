@@ -37,8 +37,6 @@ var usage = `
 
 `
 
-var dataCache []string
-
 func main() {
 	args, err := docopt.Parse(usage, nil, true, "0.0.1", false)
 	check(err)
@@ -64,8 +62,6 @@ func main() {
 	it := 0
 
 	for _ = range tick {
-		dataCache = []string{}
-
 		fmt.Fprintf(os.Stdout, "%s", f())
 		if it++; -1 != max && it == max {
 			return
@@ -77,6 +73,8 @@ func compile(tmpl string) func() string {
 	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+(\:([a-zA-Z0-9\.,-]+))?) *}})`)
 	check(err)
 	return func() string {
+		var dataCache []string
+
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
 			var data string
 
