@@ -1,4 +1,3 @@
-
 # phony
 
   Tiny command line program that accepts a template and outputs fake data.
@@ -137,6 +136,20 @@ More info: https://golang.org/pkg/math/rand/#Rand.NormFloat64
 
 - Deviation in days
 - Range in days
+
+## Numbering
+
+You can define numbers in your template to reference previously defined templates:
+
+```
+echo '{"email":"{{email}}", "email_repeated": "{{0}}"}' \
+  | phony --max 1
+```
+
+This will output something similar to the following:
+```
+{"email":"tomaslau16@example.us","email_repeated":"tomaslau16@example.us"}
+```
 
 ## License
 
