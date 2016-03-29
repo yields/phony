@@ -1,16 +1,23 @@
 package main
 
-import "github.com/yields/phony/pkg/phony"
-import "github.com/tj/docopt"
-import "math/rand"
-import "io/ioutil"
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"sort"
+	"strings"
+
+	"math/rand"
+	"os"
+	"regexp"
+
+	"github.com/tj/docopt"
+	"github.com/yields/phony/pkg/phony"
+)
+
 import "strconv"
-import "strings"
-import "regexp"
-import "sort"
+
 import "time"
-import "fmt"
-import "os"
 
 var usage = `
   Usage: phony
@@ -29,6 +36,8 @@ var usage = `
     -h, --help      show help information
 
 `
+
+var dataCache []string
 
 func main() {
 	args, err := docopt.Parse(usage, nil, true, "0.0.1", false)
@@ -55,6 +64,8 @@ func main() {
 	it := 0
 
 	for _ = range tick {
+		dataCache = []string{}
+
 		fmt.Fprintf(os.Stdout, "%s", f())
 		if it++; -1 != max && it == max {
 			return
@@ -67,14 +78,30 @@ func compile(tmpl string) func() string {
 	check(err)
 	return func() string {
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
+			var data string
+
 			call := strings.Trim(s[2:len(s)-2], " ")
+
 			parts := strings.Split(call, ":")
 			var arguments []string = nil
 			if len(parts) == 2 {
 				arguments = strings.Split(parts[1], ",")
 			}
-			data, err := phony.GetWithArgs(parts[0], arguments)
-			check(err)
+
+			i64, err := strconv.ParseInt(parts[0], 10, 64)
+
+			if err != nil {
+				data, err = phony.GetWithArgs(parts[0], arguments)
+				check(err)
+
+				dataCache = append(dataCache, data)
+			} else {
+				if len(dataCache) <= int(i64) {
+					check(errors.New("Given template references a non-existant value"))
+				}
+				return dataCache[i64]
+			}
+
 			return data
 		})
 	}
