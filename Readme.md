@@ -56,7 +56,7 @@ Usage: phony
 Options:
   --tick d        generate data every d [default: 10ms]
   --max n         generate data up to n [default: -1]
-  --batch n       batch size for concurrent runs [default: 0]
+  --batch n       batch size for concurrent runs [default: 100]
   --list d        list all available generators
   --concurrent    skip ticks and generate fake data concurrently
   -v, --version   show version information
