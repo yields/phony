@@ -13,14 +13,14 @@ func TestGetReturnsNonEmptyString(t *testing.T) {
 	g := NewGenerator()
 
 	a, _ := g.Get("name", nil)
-	assert.NotEqual(t, a, "")
+	assert.NotEqual(t, "", a)
 }
 
 func TestGetWithArgsBehavesAsGetByDefault(t *testing.T) {
 	g := NewGenerator()
 
 	a, _ := g.GetWithArgs("name", []string{}, nil)
-	assert.NotEqual(t, a, "")
+	assert.NotEqual(t, "", a)
 }
 
 func TestSmartdouble(t *testing.T) {
@@ -28,7 +28,7 @@ func TestSmartdouble(t *testing.T) {
 
 	a, err := g.GetWithArgs("smartdouble", []string{"100", "10000", "1000", "1000000"}, nil)
 	assert.Nil(t, err)
-	assert.NotEqual(t, a, "")
+	assert.NotEqual(t, "", a)
 
 	num, err := strconv.ParseFloat(a, 64)
 	assert.Nil(t, err)
@@ -94,7 +94,7 @@ func TestEmpty(t *testing.T) {
 	g := NewGenerator()
 
 	a, _ := g.Get("foo", nil)
-	assert.Equal(t, a, "")
+	assert.Equal(t, "", a)
 }
 
 func TestAll(t *testing.T) {
@@ -102,6 +102,6 @@ func TestAll(t *testing.T) {
 
 	for _, p := range g.List() {
 		a, _ := g.Get(p, nil)
-		assert.NotEqual(t, a, "")
+		assert.NotEqual(t, "", a)
 	}
 }
