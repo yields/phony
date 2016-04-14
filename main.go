@@ -1,16 +1,23 @@
 package main
 
-import "github.com/yields/phony/pkg/phony"
-import "github.com/tj/docopt"
-import "math/rand"
-import "io/ioutil"
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"sort"
+	"strings"
+
+	"math/rand"
+	"os"
+	"regexp"
+
+	"github.com/tj/docopt"
+	"github.com/yields/phony/pkg/phony"
+)
+
 import "strconv"
-import "strings"
-import "regexp"
-import "sort"
+
 import "time"
-import "fmt"
-import "os"
 
 var usage = `
   Usage: phony
@@ -63,12 +70,37 @@ func main() {
 }
 
 func compile(tmpl string) func() string {
-	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+) *}})`)
+	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+(\:([a-zA-Z0-9\.,-]+))?) *}})`)
 	check(err)
 	return func() string {
+		var dataCache []string
+
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
-			path := strings.Trim(s[2:len(s)-2], " ")
-			return phony.Get(path)
+			var data string
+
+			call := strings.Trim(s[2:len(s)-2], " ")
+
+			parts := strings.Split(call, ":")
+			var arguments []string = nil
+			if len(parts) == 2 {
+				arguments = strings.Split(parts[1], ",")
+			}
+
+			i64, err := strconv.ParseInt(parts[0], 10, 64)
+
+			if err != nil {
+				data, err = phony.GetWithArgs(parts[0], arguments)
+				check(err)
+
+				dataCache = append(dataCache, data)
+			} else {
+				if len(dataCache) <= int(i64) {
+					check(errors.New("Given template references a non-existant value"))
+				}
+				return dataCache[i64]
+			}
+
+			return data
 		})
 	}
 }

@@ -10,7 +10,7 @@ var gen = New(&Dataset{
 
 // Dataset.
 type Dataset struct {
-	gens map[string]func(g *Generator) string
+	gens map[string]func(g *Generator, args []string) (string, error)
 	dict map[string][]string
 }
 
@@ -25,24 +25,25 @@ func New(set *Dataset) *Generator {
 }
 
 // Get `path`.
-func (g *Generator) Get(p string) string {
+func (g *Generator) Get(p string) (string, error) {
+	return g.GetWithArgs(p, nil)
+}
+
+// Get `path`.
+func (g *Generator) GetWithArgs(p string, args []string) (string, error) {
 	gens := g.set.gens
 	dict := g.set.dict
 
-	for k, f := range gens {
-		if k == p {
-			return f(g)
-		}
+	if f, ok := gens[p]; ok {
+		return f(g, args)
 	}
 
-	for k, list := range dict {
-		if k == p {
-			i := rand.Intn(len(list))
-			return list[i]
-		}
+	if list, ok := dict[p]; ok {
+		i := rand.Intn(len(list))
+		return list[i], nil
 	}
 
-	return ""
+	return "", nil
 }
 
 // List all paths.
@@ -63,8 +64,13 @@ func (g *Generator) List() []string {
 }
 
 // Get `path`.
-func Get(path string) string {
+func Get(path string) (string, error) {
 	return gen.Get(path)
+}
+
+// Get `path`.
+func GetWithArgs(path string, args []string) (string, error) {
+	return gen.GetWithArgs(path, args)
 }
 
 // List all available paths.
