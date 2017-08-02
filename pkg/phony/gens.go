@@ -48,7 +48,7 @@ var gens = map[string]func(g *Generator) string{
 	"uuid": func(g *Generator) string {
 		return uuid.New().String()
 	},
-	"kusid": func(g *Generator) string {
+	"ksuid": func(g *Generator) string {
 		return ksuid.New().String()
 	},
 	"ipv4": func(g *Generator) string {
