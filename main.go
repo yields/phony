@@ -30,7 +30,7 @@ var usage = `
     echo '{{ name }}' | phony --tick 1s
 
     # output a sigle name
-    echo '{{ name }}' | phony --max 1 
+    echo '{{ name }}' | phony --max 1
 
   Options:
     --list          list all available generators
@@ -60,7 +60,14 @@ func main() {
 
 	d := parseDuration(args["--tick"].(string))
 	max := parseInt(args["--max"].(string))
+
+	if 0 >= d {
+		fmt.Fprintf(os.Stderr, "phony: --tick must be a positive interval, got %q\n", d)
+		os.Exit(1)
+	}
+
 	tmpl := readAll(os.Stdin)
+
 	ticker := time.NewTicker(d)
 	defer ticker.Stop()
 	f := compile(string(tmpl))
