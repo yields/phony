@@ -50,11 +50,12 @@ func main() {
 	d := parseDuration(args["--tick"].(string))
 	max := parseInt(args["--max"].(string))
 	tmpl := readAll(os.Stdin)
-	tick := time.Tick(d)
+	ticker := time.NewTicker(d)
+	defer ticker.Stop()
 	f := compile(string(tmpl))
 	it := 0
 
-	for _ = range tick {
+	for range ticker.C {
 		fmt.Fprintf(os.Stdout, "%s", f())
 		if it++; -1 != max && it == max {
 			return
