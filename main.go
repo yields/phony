@@ -55,7 +55,7 @@ func main() {
 	f := compile(string(tmpl))
 	it := 0
 
-	for _ = range ticker.C {
+	for range ticker.C {
 		fmt.Fprintf(os.Stdout, "%s", f())
 		if it++; -1 != max && it == max {
 			return
