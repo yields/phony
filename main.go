@@ -21,6 +21,17 @@ var usage = `
     phony -h | --help
     phony -v | --version
 
+  Examples:
+
+    # output names
+    echo '{{ name }}' | phony
+
+    # output names every 1s
+    echo '{{ name }}' | phony --tick 1s
+
+    # output a sigle name
+    echo '{{ name }}' | phony --max 1 
+
   Options:
     --list          list all available generators
     --max n         generate data up to n [default: -1]
