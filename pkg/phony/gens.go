@@ -12,6 +12,9 @@ import (
 
 // Default gens.
 var gens = map[string]func(g *Generator) string{
+	"now.utc": func(g *Generator) string {
+		return time.Now().UTC().Format(time.RFC3339)
+	},
 	"name": func(g *Generator) string {
 		a := g.Get("name.first")
 		b := g.Get("name.last")
