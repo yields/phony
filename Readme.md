@@ -5,6 +5,20 @@
 
   ![](https://cldup.com/RZoAhReDqN.gif)
 
+## Installation
+
+Via gobinaries.com
+
+```bash
+$ curl https://gobinaries.com/yields/phony | sh
+```
+
+Via go get:
+
+```bash
+$ go get github.com/yields/phony
+```
+
 ## Examples
 
 ```bash
@@ -32,12 +46,6 @@ echo "set {{username}} {{avatar}}" \
 echo 'country={{country}}' \
   | phony --max 1 \
   | curl -d @- httpbin.org/post
-```
-
-## Installation
-
-```bash
-$ go get github.com/yields/phony
 ```
 
 ## Usage
