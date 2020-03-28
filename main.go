@@ -82,12 +82,19 @@ func main() {
 }
 
 func compile(tmpl string) func() string {
-	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+) *}})`)
+	expr, err := regexp.Compile(`({{ *(([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+(\:([a-zA-Z0-9,]+))?) *}})`)
 	check(err)
 	return func() string {
 		return expr.ReplaceAllStringFunc(tmpl, func(s string) string {
-			path := strings.Trim(s[2:len(s)-2], " ")
-			return phony.Get(path)
+			call := strings.Trim(s[2:len(s)-2], " ")
+			parts := strings.Split(call, ":")
+			var arguments []string = nil
+			if len(parts) == 2 {
+				arguments = strings.Split(parts[1], ",")
+			}
+			data, err := phony.GetWithArgs(parts[0], arguments)
+			check(err)
+			return data
 		})
 	}
 }
