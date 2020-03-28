@@ -1,12 +1,20 @@
 package phony
 
-import "math/rand"
-import "strconv"
-import "time"
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"strconv"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/segmentio/ksuid"
+)
 
 // Default gens.
 var gens = map[string]func(g *Generator, args []string) (string, error){
+	"now.utc": func(g *Generator, args []string) (string, error) {
+		return time.Now().UTC().Format(time.RFC3339), nil
+	},
 	"name": func(g *Generator, args []string) (string, error) {
 		a, _ := g.Get("name.first")
 		b, _ := g.Get("name.last")
@@ -39,6 +47,12 @@ var gens = map[string]func(g *Generator, args []string) (string, error){
 		}
 
 		return string(ret), nil
+	},
+	"uuid": func(g *Generator, args []string) (string, error) {
+		return uuid.New().String(), nil
+	},
+	"ksuid": func(g *Generator, args []string) (string, error) {
+		return ksuid.New().String(), nil
 	},
 	"ipv4": func(g *Generator, args []string) (string, error) {
 		return fmt.Sprintf("%d.%d.%d.%d", 1+rand.Intn(253), rand.Intn(255), rand.Intn(255), 1+rand.Intn(253)), nil

@@ -21,6 +21,17 @@ var usage = `
     phony -h | --help
     phony -v | --version
 
+  Examples:
+
+    # output names
+    echo '{{ name }}' | phony
+
+    # output names every 1s
+    echo '{{ name }}' | phony --tick 1s
+
+    # output a sigle name
+    echo '{{ name }}' | phony --max 1
+
   Options:
     --list          list all available generators
     --max n         generate data up to n [default: -1]
@@ -49,12 +60,20 @@ func main() {
 
 	d := parseDuration(args["--tick"].(string))
 	max := parseInt(args["--max"].(string))
+
+	if 0 >= d {
+		fmt.Fprintf(os.Stderr, "phony: --tick must be a positive interval, got %q\n", d)
+		os.Exit(1)
+	}
+
 	tmpl := readAll(os.Stdin)
-	tick := time.Tick(d)
+
+	ticker := time.NewTicker(d)
+	defer ticker.Stop()
 	f := compile(string(tmpl))
 	it := 0
 
-	for _ = range tick {
+	for range ticker.C {
 		fmt.Fprintf(os.Stdout, "%s", f())
 		if it++; -1 != max && it == max {
 			return

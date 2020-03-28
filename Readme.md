@@ -78,6 +78,7 @@ Options:
   id
   ipv4
   ipv6
+  ksuid
   latitude
   longitude
   mac.address
@@ -91,6 +92,7 @@ Options:
   timezone
   unixtime
   username
+  uuid
 ```
 
 ## License
